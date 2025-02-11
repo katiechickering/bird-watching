@@ -25,7 +25,8 @@ Katie Chickering - https://github.com/katiechickering
 python server.py
  * Serving Flask app 'flask_app'
  * Debug mode: on
-WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+WARNING: This is a development server. Do not use it in a production deployment.
+Use a production WSGI server instead.
  * Running on http://localhost:5001
 ```
 Run 'python server.py' in your terminal. Then, copy and paste http://localhost:5001 into your browser to view the application!
@@ -40,8 +41,8 @@ First, install all the required packages above in your terminal. Please referenc
 
 ```py
 connection = pymysql.connect(host = 'localhost',
-                            user = 'root', # Change this string value to match your local database credentials
-                            password = 'rootroot', # Change this string value to match your local database credentials
+                            user = 'root', # Line 8
+                            password = 'rootroot', # Line 9
                             db = db,
                             charset = 'utf8mb4',
                             cursorclass = pymysql.cursors.DictCursor,
