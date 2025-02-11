@@ -34,10 +34,10 @@ Run 'python server.py' in your terminal. Then, copy and paste http://localhost:5
 ## ⬇️ Installation
 
 ```bash
-pip install flask, pymysql, flask-bcrypt
+pip install flask pymysql flask-bcrypt
 ```
-First, install all the required packages above in your terminal. Then, run bird_watching.sql in your database software to save the database.
+First, install all the required packages above in your terminal. Please reference requirements.txt if needed. Then, run bird_watching.sql in your local database software to save the database. Finally, change the user and password in line 8 and 9 of mysqlconnection.py to match your database credentials.
 
 ## 💭 Feedback and Contributing
 
-If you found this insightful or if you have suggestions, please start a [discussion]()!
+If you found this insightful or if you have suggestions, please start a [discussion](https://github.com/katiechickering/bird-watching/discussions/1)!
