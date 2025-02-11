@@ -21,8 +21,8 @@ Katie Chickering - https://github.com/katiechickering
 
 ## 🚀 Usage
 
-```py
->>> python server.py
+```bash
+python server.py
  * Serving Flask app 'flask_app'
  * Debug mode: on
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
@@ -38,7 +38,7 @@ pip install flask pymysql flask-bcrypt
 ```
 First, install all the required packages above in your terminal. Please reference requirements.txt if needed. Then, run bird_watching.sql in your local database software to save the database. Finally, change the user and password in lines 8 and 9 of flask_app/config/mysqlconnection.py to match your database credentials. Please see below for a reference.
 
-```bash
+```py
 connection = pymysql.connect(host = 'localhost',
                             user = 'root', # Change this string value to match your local database credentials
                             password = 'rootroot', # Change this string value to match your local database credentials
