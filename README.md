@@ -36,7 +36,17 @@ Run 'python server.py' in your terminal. Then, copy and paste http://localhost:5
 ```bash
 pip install flask pymysql flask-bcrypt
 ```
-First, install all the required packages above in your terminal. Please reference requirements.txt if needed. Then, run bird_watching.sql in your local database software to save the database. Finally, change the user and password in lines 8 and 9 of flask_app/config/mysqlconnection.py to match your database credentials.
+First, install all the required packages above in your terminal. Please reference requirements.txt if needed. Then, run bird_watching.sql in your local database software to save the database. Finally, change the user and password in lines 8 and 9 of flask_app/config/mysqlconnection.py to match your database credentials. Please see below for a reference.
+
+```bash
+connection = pymysql.connect(host = 'localhost',
+                            user = 'root', # Change this string value to match your local database credentials
+                            password = 'rootroot', # Change this string value to match your local database credentials
+                            db = db,
+                            charset = 'utf8mb4',
+                            cursorclass = pymysql.cursors.DictCursor,
+                            autocommit = False)
+```
 
 ## 💭 Feedback and Contributing
 
