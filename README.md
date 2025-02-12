@@ -37,7 +37,7 @@ Run 'python server.py' in your terminal. Then, copy and paste http://localhost:5
 ```bash
 pip install -r requirements.txt
 ```
-First, install all the required packages with the code above. Then, run bird_watching.sql in your local database software to save the database. Finally, change the user and password in lines 8 and 9 of flask_app/config/mysqlconnection.py to match your database credentials. Please see below for a reference.
+First, install all the required packages with the code above. Then, run bird_watching.sql in your MySQL local database software to save the database. Finally, change the user and password in lines 8 and 9 of flask_app/config/mysqlconnection.py to match your database credentials. Please see below for a reference.
 
 ```py
 connection = pymysql.connect(host = 'localhost',
