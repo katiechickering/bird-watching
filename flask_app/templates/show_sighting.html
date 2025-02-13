@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Sighting</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container d-flex flex-column col-10 mt-5">
+        <!-- Navigation Bar -->
+        <div class="d-flex justify-content-between">
+                <h1>Bird Watching Forum</h1>
+            <div class="d-flex flex-column justify-content-end">
+                <div class="d-flex justify-content-end">
+                    <h4 class="text-nowrap">{{user.first_name}} {{user.last_name}}</h4>
+                </div>
+                <!-- Return to dashboard button -->
+                <div class="d-flex justify-content-end">
+                    <form action="/user/dashboard">
+                        <button type="submit" class="btn btn-secondary text-nowrap">Dashboard</button>
+                    </form>
+                </div>
+                <!-- Logout button -->
+                <div class="d-flex justify-content-end">
+                    <form action="/user/logout">
+                        <button type="submit" class="btn btn-secondary mt-1">Log Out</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <hr class="bg-secondary border-2 border-top border-black" />
+        <!-- Show sighting -->
+        <div class="container d-flex justify-content-between col-10">
+            <div class="d-flex flex-column">
+                <h3 class="d-flex flex-wrap">{{sighting.location}} on {{sighting.datetime.strftime("%B %e, %Y")}} at {{sighting.datetime.strftime("%I:%M %p")}}</h3>
+                <div class="card mt-3">
+                    <!-- Sighting information -->
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Species: {{sighting.species}}</li>
+                        <li class="list-group-item">What Happened: {{sighting.description}}</li>
+                        <li class="list-group-item">Number of Birds: {{sighting.number}}</li>
+                        <li class="list-group-item">Posted by: {{sighting.user.first_name}} {{sighting.user.last_name}}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="d-flex flex-column">
+                <!-- List of users who like the post -->
+                {% if sighting.likes >= 1 %}
+                    {% if sighting.likes == 1 %}
+                        <h4>1 Like:</h4>
+                    {% else %}
+                        <h4>{{sighting.likes}} Likes:</h4>
+                    {% endif %}
+                    {% for like in likes %}
+                        <p>{{like.user.first_name}} {{like.user.last_name}}</p>
+                    {% endfor %}
+                {% else %}
+                    <h4>0 Likes</h4>
+                {% endif %}
+                <div class="d-flex">
+                    <!-- Like button -->
+                    <form action="/user/like/process" method="post">
+                        <input type="hidden" name="sighting_id" value="{{sighting.id}}">
+                        <input type="hidden" name="user_id" value="{{user.id}}">
+                        <button type="submit" class="btn btn-success">Like</button>
+                    </form>
+                    <!-- Unlike button -->
+                    <form action="/user/unlike/process" method="post">
+                        <input type="hidden" name="sighting_id" value="{{sighting.id}}">
+                        <input type="hidden" name="user_id" value="{{user.id}}">
+                        <button type="submit" class="btn btn-danger ms-3">Unlike</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="container d-flex flex-column col-10">
+            <!-- Comments for the sighting -->
+            <h4 class="container col-10 mt-5">Comments:</h4>
+            {% for comment in comments %}
+                {% if comment.sighting_id == sighting.id %}
+                    <div class="d-flex justify-content-center">
+                        <div class="card col-10 mt-3">
+                            <div class="card-header d-flex justify-content-between">
+                                <p class="mb-2 mt-2">
+                                    {{comment.user.first_name}} {{comment.user.last_name}} -
+                                    {{comment.created_at.strftime("%B %e, %Y")}} at {{comment.created_at.strftime("%I:%M %p")}}
+                                </p>
+                                {% if user.id == comment.user_id %}
+                                    <div class="d-flex">
+                                        <!-- Edit a comment button -->
+                                        <form action="/user/edit/comment/{{comment.id}}">
+                                            <input type="hidden" name="id" value="{{comment.id}}">
+                                            <button type="submit" class="btn btn-primary">Edit</button>
+                                        </form>
+                                        <!-- Delete a comment button -->
+                                        <form action="/user/delete_comment/process" method="post">
+                                            <input type="hidden" name="id" value="{{comment.id}}">
+                                            <input type="hidden" name="sighting_id" value="{{comment.sighting_id}}">
+                                            <button type="submit" class="btn btn-danger ms-3">Delete</button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">{{comment.content}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <!-- Form to comment -->
+            <form action="/user/comment/process" method="post" class="mt-3 mb-3 col-10 container">
+                <!-- Validation flash messages -->
+                <div>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages if category == 'comment' %}
+                                <p class="alert alert-danger card">{{message}}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <input type="hidden" value="{{sighting.id}}" name="sighting_id">
+                <input type="hidden" value="{{user.id}}" name="user_id">
+                <div class="form-group mt-3">
+                    <label for="content" class="text-primary">Post a comment</label>
+                    <input type="text" class="form-control" name="content" id="content">
+                </div>
+                <!-- Button to submit comment -->
+                <div class="form-group d-flex justify-content-end mt-3">
+                    <button type='submit' class="btn btn-primary">Comment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
