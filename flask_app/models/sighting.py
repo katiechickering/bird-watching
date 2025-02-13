@@ -80,9 +80,6 @@ class Sighting:
         if len(data['description']) < 1:
             flash('Must provide a description', 'sighting')
             is_valid = False
-        elif len(data['description']) > 50:
-            flash('Description must have no more than 50 characters', 'sighting')
-            is_valid = False
         return is_valid
     
     # Create a sighting
