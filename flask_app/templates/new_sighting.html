@@ -49,23 +49,23 @@
                     <input type="hidden" name="user_id" value="{{user.id}}">
                     <div class="form-group">
                         <label for="species">Species:</label>
-                        <input type="text" name="species" id="species" class="form-control">
+                        <input type="text" name="species" id="species" class="form-control" value="{{session['n-species']}}">
                     </div>
                     <div class="form-group mt-3">
                         <label for="location">Location:</label>
-                        <input type="text" name="location" id="location" class="form-control">
+                        <input type="text" name="location" id="location" class="form-control" value="{{session['n-location']}}">
                     </div>
                     <div class="form-group mt-3">
                         <label for="datetime">Date and Time of Sighting:</label>
-                        <input type="datetime-local" name="datetime" id="datetime" class="form-control">
+                        <input type="datetime-local" name="datetime" id="datetime" class="form-control" value="{{session['n-datetime']}}">
                     </div>
                     <div class="form-group mt-3">
                         <label for="number">Number of Birds:</label>
-                        <input type="number" name="number" id="number" class="form-control">
+                        <input type="number" name="number" id="number" class="form-control" value="{{session['n-number']}}">
                     </div>
                     <div class="form-group mt-3">
                         <label for="description">What happened? (max 50 characters)</label>
-                        <textarea name="description" id="description" class="form-control" rows="5"></textarea>
+                        <textarea name="description" id="description" class="form-control" rows="5">{{session['n-description']}}</textarea>
                     </div>
                     <!-- Post a sighting button -->
                     <div class="form-group mt-3 mb-3 d-flex justify-content-end">

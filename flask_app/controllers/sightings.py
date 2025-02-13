@@ -28,8 +28,18 @@ def delete():
 @app.post('/user/sighting/process')
 def create_sighting():
     if not sighting.Sighting.validate_sighting(request.form):
+        session['n-species'] = request.form['species']
+        session['n-location'] = request.form['location']
+        session['n-datetime'] = request.form['datetime']
+        session['n-number'] = request.form['number']
+        session['n-description'] = request.form['description']
         return redirect('/user/sightings/new')
     sighting.Sighting.create_sighting(request.form)
+    session.pop('n-species', None)
+    session.pop('n-location', None)
+    session.pop('n-datetime', None)
+    session.pop('n-number', None)
+    session.pop('n-description', None)
     return redirect('/user/dashboard')
 
 # Edit a sighting page
@@ -40,11 +50,11 @@ def edit_sighting_page(id):
     sighting_data = sighting.Sighting.get_by_id(id)
     if sighting_data.user_id != user_data.id:
         return redirect('/user/dashboard')
-    session['species'] = sighting_data.species
-    session['location'] = sighting_data.location
-    session['datetime'] = sighting_data.datetime
-    session['number'] = sighting_data.number
-    session['description'] = sighting_data.description
+    session['e-species'] = sighting_data.species
+    session['e-location'] = sighting_data.location
+    session['e-datetime'] = sighting_data.datetime
+    session['e-number'] = sighting_data.number
+    session['e-description'] = sighting_data.description
     return render_template('edit_sighting.html', sighting=sighting_data, user=user_data)
 
 # Edit a sighting
@@ -52,11 +62,11 @@ def edit_sighting_page(id):
 def edit_sighting():
     if not sighting.Sighting.validate_sighting(request.form):
         return redirect(f'/user/sightings/edit/{request.form['id']}')
-    session.pop('species', None)
-    session.pop('location', None)
-    session.pop('datetime', None)
-    session.pop('number', None)
-    session.pop('description', None)
+    session.pop('e-species', None)
+    session.pop('e-location', None)
+    session.pop('e-datetime', None)
+    session.pop('e-number', None)
+    session.pop('e-description', None)
     sighting.Sighting.edit(request.form)
     return redirect('/user/dashboard')
 

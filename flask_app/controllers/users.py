@@ -17,12 +17,12 @@ def login():
 def register_success():
     session['fname'] = request.form['fname']
     session['lname'] = request.form['lname']
-    session['r_email'] = request.form['email']
+    session['r-email'] = request.form['email']
     if not user.User.validate_reg(request.form):
         return redirect('/user/login')
     session.pop('fname', None)
     session.pop('lname', None)
-    session.pop('r_email', None)
+    session.pop('r-email', None)
     id = user.User.create(request.form)
     session['id'] = id
     return redirect('/user/dashboard')
@@ -30,11 +30,11 @@ def register_success():
 # Login a user
 @app.post('/user/login/process')
 def login_success():
-    session['l_email'] = request.form['email']
+    session['l-email'] = request.form['email']
     user_data = user.User.validate_login(request.form)
     if not user_data:
         return redirect('/user/login')
-    session.pop('l_email', None)
+    session.pop('l-email', None)
     session['id'] = user_data.id
     return redirect('/user/dashboard')
 
