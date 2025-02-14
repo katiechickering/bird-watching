@@ -11,7 +11,7 @@
 
 ## ℹ️ Overview
 
-Hello, my name is Katie. I am a student at Colorado Technical University studying software engineering. I created this project to showcase my skills with Flask, Python, SQL, Jinja, and HTML. My files are organized in an MVC format with flask_app, config, controllers, models, and templates folders. This bird watcing forum consists of 4 different SQL tables that all interact with each other. The goal of this software is to display my expertise in connecting and modifying databases with SQL and Python and displaying the data dynamically with Jinja and HTML.
+Hello, my name is Katie. I am a student at Colorado Technical University studying software engineering. I created this project to showcase my skills with Flask, Python, SQL, Jinja, Bootstrap, and HTML. My files are organized in an MVC format with flask_app, config, controllers, models, and templates folders. This bird watcing forum consists of 4 different SQL tables that all interact with each other. The goal of this software is to display my expertise in connecting and modifying databases with SQL and Python and displaying the data dynamically with Jinja and HTML.
 
 
 ### ✍️ Authors
