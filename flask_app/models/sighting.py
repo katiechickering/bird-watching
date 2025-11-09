@@ -6,7 +6,6 @@ from datetime import datetime
 
 # Sighting class
 class Sighting:
-    DB = 'bird_watching_schema'
     def __init__(self, data):
         self.id = data['id']
         self.species = data['species']
@@ -23,9 +22,10 @@ class Sighting:
     # Get all sightings
     @classmethod
     def get_all(cls):
-        query = '''SELECT * FROM sightings LEFT JOIN users ON sightings.user_id = users.id
-            ORDER BY sightings.datetime DESC;'''
-        results = connect_to_mysql(cls.DB).query_db(query)
+        query = '''SELECT * FROM sightings 
+                   LEFT JOIN users ON sightings.user_id = users.id
+                   ORDER BY sightings.datetime DESC;'''
+        results = connect_to_mysql().query_db(query)
         sightings = []
         for row in results:
             sighting = cls(row)
@@ -39,34 +39,33 @@ class Sighting:
                 'updated_at': row['users.updated_at']
             }
             sighting.user = user.User(user_data)
-            id = {'id': sighting.id}
-            query = 'SELECT * FROM likes WHERE likes.sighting_id = %(id)s;'
-            like_results = connect_to_mysql(cls.DB).query_db(query, id)
-            likes = 0
-            for like_row in like_results:
-                if like_row['like'] == 1:
-                    likes += 1
-            sighting.likes = likes
+
+            sighting_id_dict = {'id': sighting.id}
+            like_results = connect_to_mysql().query_db(
+                'SELECT * FROM likes WHERE likes.sighting_id = %(id)s;', sighting_id_dict
+            )
+            sighting.likes = sum(1 for like_row in like_results if like_row['like'] == 1)
+
             sightings.append(sighting)
         return sightings
-    
+
     # Delete a sighting
     @classmethod
     def delete_sighting(cls, data):
         query = "DELETE FROM sightings WHERE id = %(id)s;"
-        return connect_to_mysql(cls.DB).query_db(query, data)
-    
+        return connect_to_mysql().query_db(query, data)
+
     # Validate a sighting
     @staticmethod
     def validate_sighting(data):
         is_valid = True
-        if len(data['location']) < 1:
+        if not data.get('location'):
             flash("Location is required", 'sighting')
             is_valid = False
-        if len(data['species']) < 1:
-            flash("species is required", 'sighting')
+        if not data.get('species'):
+            flash("Species is required", 'sighting')
             is_valid = False
-        if len(data['datetime']) < 1:
+        if not data.get('datetime'):
             flash("Date and time is required", 'sighting')
             is_valid = False
         else:
@@ -74,27 +73,30 @@ class Sighting:
             if datetime_obj > datetime.now():
                 flash("Date must be in the past", 'sighting')
                 is_valid = False
-        if len(data['number']) < 1 or int(data['number']) < 1:
+        if not data.get('number') or int(data['number']) < 1:
             flash('Must sight at least 1 bird', 'sighting')
             is_valid = False
-        if len(data['description']) < 1:
+        if not data.get('description'):
             flash('Must provide a description', 'sighting')
             is_valid = False
         return is_valid
-    
+
     # Create a sighting
     @classmethod
     def create_sighting(cls, data):
-        query = '''INSERT INTO sightings (species, location, datetime, number, description, created_at, updated_at, user_id)
-            VALUES (%(species)s, %(location)s, %(datetime)s, %(number)s, %(description)s, NOW(), NOW(), %(user_id)s);'''
-        return connect_to_mysql(cls.DB).query_db(query, data)
-    
-    # Get sighting by the id
+        query = '''INSERT INTO sightings 
+                   (species, location, datetime, number, description, created_at, updated_at, user_id)
+                   VALUES (%(species)s, %(location)s, %(datetime)s, %(number)s, %(description)s, NOW(), NOW(), %(user_id)s);'''
+        return connect_to_mysql().query_db(query, data)
+
+    # Get sighting by ID
     @classmethod
-    def get_by_id(cls, data):
-        id = {'id': data}
-        query = "SELECT * FROM sightings LEFT JOIN users ON sightings.user_id = users.id WHERE sightings.id = %(id)s;"
-        results = connect_to_mysql(cls.DB).query_db(query, id)
+    def get_by_id(cls, sighting_id):
+        id_dict = {'id': sighting_id}
+        query = '''SELECT * FROM sightings 
+                   LEFT JOIN users ON sightings.user_id = users.id 
+                   WHERE sightings.id = %(id)s;'''
+        results = connect_to_mysql().query_db(query, id_dict)
         result = results[0]
         sighting = cls(result)
         user_data = {
@@ -107,18 +109,17 @@ class Sighting:
             'updated_at': result['users.updated_at']
         }
         sighting.user = user.User(user_data)
-        query = 'SELECT * FROM likes WHERE likes.sighting_id = %(id)s;'
-        like_results = connect_to_mysql(cls.DB).query_db(query, id)
-        likes = 0
-        for like_row in like_results:
-            if like_row['like'] == 1:
-                likes += 1
-        sighting.likes = likes
+
+        like_results = connect_to_mysql().query_db(
+            'SELECT * FROM likes WHERE likes.sighting_id = %(id)s;', id_dict
+        )
+        sighting.likes = sum(1 for like_row in like_results if like_row['like'] == 1)
         return sighting
-    
+
     # Edit a sighting
     @classmethod
     def edit(cls, data):
         query = '''UPDATE sightings SET species = %(species)s, location = %(location)s, datetime = %(datetime)s,
-        number = %(number)s, description = %(description)s, updated_at = NOW() WHERE id = %(id)s;'''
-        return connect_to_mysql(cls.DB).query_db(query, data)
+                   number = %(number)s, description = %(description)s, updated_at = NOW() 
+                   WHERE id = %(id)s;'''
+        return connect_to_mysql().query_db(query, data)

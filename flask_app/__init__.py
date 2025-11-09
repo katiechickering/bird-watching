@@ -1,3 +1,5 @@
 from flask import Flask
+from flask_app.config.config import Config
+
 app = Flask(__name__)
-app.secret_key = 'shhhhhh'
+app.config.from_object(Config)

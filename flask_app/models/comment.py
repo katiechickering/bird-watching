@@ -5,7 +5,6 @@ from flask import flash
 
 # Comment class
 class Comment:
-    DB = 'bird_watching_schema'
     def __init__(self, data):
         self.id = data['id']
         self.content = data['content']
@@ -19,7 +18,7 @@ class Comment:
     @classmethod
     def get_all(cls):
         query = '''SELECT * FROM comments LEFT JOIN users ON comments.user_id = users.id;'''
-        results = connect_to_mysql(cls.DB).query_db(query)
+        results = connect_to_mysql().query_db(query)
         comments = []
         for row in results:
             comment = cls(row)
@@ -30,7 +29,7 @@ class Comment:
                 'email': row['email'],
                 'password': row['password'],
                 'created_at': row['users.created_at'],
-                'updated_at': row['users.created_at']
+                'updated_at': row['users.updated_at']
             }
             comment.user = user.User(user_data)
             comments.append(comment)
@@ -40,8 +39,8 @@ class Comment:
     @classmethod
     def create_comment(cls, data):
         query = '''INSERT INTO comments (content, created_at, updated_at, user_id, sighting_id)
-            VALUES (%(content)s, NOW(), NOW(), %(user_id)s, %(sighting_id)s)'''
-        return connect_to_mysql(cls.DB).query_db(query, data)
+                   VALUES (%(content)s, NOW(), NOW(), %(user_id)s, %(sighting_id)s)'''
+        return connect_to_mysql().query_db(query, data)
     
     # Validate a comment
     @classmethod
@@ -56,18 +55,20 @@ class Comment:
     @classmethod
     def delete_comment(cls, data):
         query = "DELETE FROM comments WHERE id = %(id)s;"
-        return connect_to_mysql(cls.DB).query_db(query, data)
+        return connect_to_mysql().query_db(query, data)
     
     # Get one comment by the id
     @classmethod
     def get_by_id(cls, data):
-        id = {'id': data}
+        id_dict = {'id': data}
         query = 'SELECT * FROM comments WHERE id = %(id)s;'
-        result = connect_to_mysql(cls.DB).query_db(query, id)
-        return cls(result[0])
+        result = connect_to_mysql().query_db(query, id_dict)
+        return cls(result[0]) if result else None
     
     # Edit a comment
     @classmethod
     def edit(cls, data):
-        query = '''UPDATE comments SET content = %(content)s, updated_at = NOW() WHERE id = %(id)s;'''
-        return connect_to_mysql(cls.DB).query_db(query, data)
+        query = '''UPDATE comments 
+                   SET content = %(content)s, updated_at = NOW() 
+                   WHERE id = %(id)s;'''
+        return connect_to_mysql().query_db(query, data)

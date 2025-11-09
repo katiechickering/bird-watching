@@ -1,43 +1,41 @@
-# a cursor is the object we use to interact with the database
 import pymysql.cursors
-# this class will give us an instance of a connection to our database
+import os
+
 class MySQLConnection:
-    def __init__(self, db):
-        # change the user and password as needed
-        connection = pymysql.connect(host = 'public-database.clau4g4aiysq.us-west-1.rds.amazonaws.com',
-                                    user = 'admin',
-                                    password = 'rootsquared',
-                                    db = db,
-                                    charset = 'utf8mb4',
-                                    cursorclass = pymysql.cursors.DictCursor,
-                                    autocommit = False)
-        # establish the connection to the database
-        self.connection = connection
-    # the method to query the database
-    def query_db(self, query:str, data:dict=None):
+    def __init__(self):
+        self.connection = pymysql.connect(
+            host=os.getenv("TIDB_HOST"),
+            port=int(os.getenv("TIDB_PORT")),
+            user=os.getenv("TIDB_USER"),
+            password=os.getenv("TIDB_PASSWORD"),
+            db=os.getenv("TIDB_DATABASE"),
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor,
+            autocommit=False,
+            ssl={'ca': '/etc/ssl/cert.pem'}
+        )
+    
+    def query_db(self, query: str, data: dict = None):
+        """Executes a query and returns results if SELECT."""
         with self.connection.cursor() as cursor:
             try:
-                query = cursor.mogrify(query, data)
+                if data:
+                    query = cursor.mogrify(query, data)
                 print("Running Query:", query)
                 cursor.execute(query)
-                if query.lower().find("insert") >= 0:
-                    # INSERT queries will return the ID NUMBER of the row inserted
+                if query.lower().strip().startswith("insert"):
                     self.connection.commit()
                     return cursor.lastrowid
-                elif query.lower().find("select") >= 0:
-                    # SELECT queries will return the data from the database as a LIST OF DICTIONARIES
-                    result = cursor.fetchall()
-                    return result
+                elif query.lower().strip().startswith("select"):
+                    return cursor.fetchall()
                 else:
-                    # UPDATE and DELETE queries will return nothing
                     self.connection.commit()
             except Exception as e:
-                # if the query fails the method will return FALSE
-                print("Something went wrong", e)
+                print("Something went wrong:", e)
                 return False
             finally:
-                # close the connection
-                self.connection.close() 
-# connect_to_mysql receives the database we're using and uses it to create an instance of MySQLConnection
-def connect_to_mysql(db):
-    return MySQLConnection(db)
+                self.connection.close()
+
+def connect_to_mysql():
+    """Factory function to return a MySQLConnection object."""
+    return MySQLConnection()
