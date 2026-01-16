@@ -1,6 +1,6 @@
 # 🐦‍⬛ Bird Watching Forum
 
-Check out my deployed application [HERE](bird-watching-theta.vercel.app)
+Check out my deployed application [HERE](https://bird-watching-theta.vercel.app)
 
 
 ## 🌟 Highlights
