@@ -28,4 +28,4 @@ Katie Chickering - https://github.com/katiechickering
 
 ## 💭 Feedback and Contributing
 
-If you found this insightful or if you have suggestions, please start a [discussion]()!
+If you found this insightful or if you have suggestions, please start a [discussion](https://github.com/katiechickering/bird-watching/discussions/1)!
