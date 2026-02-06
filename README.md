@@ -3,6 +3,16 @@
 Check out my deployed application [HERE](https://bird-watching-theta.vercel.app)
 
 
+## 🛠️ Technologies Used
+
+- **Core Stack:** Flask, MySQL
+- **Languages:** Python, SQL, Jinja, HTML
+- **Bootstrap:** Front-end styling
+- **Vercel:** Website deployment
+- **TiDB:** MySQL database host
+- **Dev Tools:** VS Code, GitHub
+
+
 ## 🌟 Highlights
 
 - Create a profile to log in
