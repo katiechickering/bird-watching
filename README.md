@@ -10,7 +10,7 @@ Check out my deployed application [HERE](https://bird-watching-theta.vercel.app)
 - **Bootstrap:** Front-end styling
 - **Vercel:** Website deployment
 - **TiDB:** MySQL database host
-- **GitHub:** Version control & collaboration
+- **GitHub:** Version control
 
 
 ## 🌟 Highlights
